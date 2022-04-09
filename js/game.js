@@ -68,7 +68,7 @@ class Game {
     }
     if (this.player.life === -1) {
       this.gameOver();
-    }
+    s}
 
   }
   
@@ -84,12 +84,14 @@ class Game {
 
   gameOver() {
       alert("Game Over");
-      reloadPage()
+      document.location.reload()
+      clearInterval(this.movementTimer)
+      return
     
   }
 
   reloadPage(){
-      location.reload()
+      document.location.reload()
   }
 
   displayDetails() {
