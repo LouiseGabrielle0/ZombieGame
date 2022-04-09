@@ -1,19 +1,27 @@
+.body{
+    background-color: rgba(255, 0, 0, 0.363);
+}
+
 #container {
     position: relative;
-    background-color: rgba(247, 198, 149, 0.671);
+    background-image: url(../images/grave\ background.jpg);
+    background-repeat: no-repeat;
     height: 70vh;
     width: 90vw;
     margin: 1rem;
     margin-top: 5rem;
+    margin-left: 2rem;
 }
 
 
 .player {
-    background-color: black;
+    background-color: rgb(170, 15, 15);
     position: absolute;
 }
 
 .obstacle {
     background-color: rgb(138, 17, 17);
     position: absolute;
+    background-image: url(../images/NicePng_zombie-png_80950.png);
+    background-repeat: no-repeat;
 }

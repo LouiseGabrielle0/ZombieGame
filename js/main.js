@@ -50,6 +50,8 @@ document.addEventListener("keydown", function (event) {
           console.log("pressed to shoot")
           game.shootWeapon();
           break;
+       case "r":
+           game.reloadPage()   
       }
     })
 

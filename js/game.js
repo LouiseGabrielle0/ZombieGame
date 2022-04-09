@@ -84,7 +84,12 @@ class Game {
 
   gameOver() {
       alert("Game Over");
-      location.reload();
+      reloadPage()
+    
+  }
+
+  reloadPage(){
+      location.reload()
   }
 
   displayDetails() {
@@ -96,7 +101,7 @@ class Game {
 
 class Player {
   constructor() {
-    this.width = 5;
+    this.width = 2;
     this.height = 5;
     this.positionX = 0;
     this.positionY = 50;
@@ -124,10 +129,10 @@ class Player {
 class Obstacle {
   constructor() {
     this.positionX = 85;
-    this.positionY = Math.floor(Math.random() * 65);
+    this.positionY = Math.floor(Math.random() * 60);
     this.domElement = null;
-    this.width = 5;
-    this.height = 5;
+    this.width = 2;
+    this.height = 8;
   }
 
   moveLeft() {
