@@ -1,5 +1,3 @@
-console.log("hello world!");
-
 class Game {
   constructor(create, draw) {
     this.draw = draw;
@@ -9,17 +7,15 @@ class Game {
     this.obstacleArr = [];
     this.movementTimer = null;
     this.timer = 0;
+    this.run = false;
   }
 
-  // create player element - with class name "player" and draw
+ 
   start() {
     this.player = new Player();
     this.player.domElement = this.create("player");
     this.draw(this.player);
-    this.runGame();
     this.displayDetails();
-    
-   
   }
 
   runGame() {
@@ -28,6 +24,7 @@ class Game {
         obstacle.moveLeft();
         this.draw(obstacle);
         this.detectCollision(obstacle);
+        this.deleteOutOfScreen(obstacle);
       });
 
       if (this.timer % 5 === 0) {
@@ -35,13 +32,14 @@ class Game {
         newObstacle.domElement = this.create("obstacle");
         this.obstacleArr.push(newObstacle);
       }
-      this.gameOver()
-      this.timer++
 
-    },100);
+      this.timer++;
+    }, 100);
   }
 
-  pauseGame() {}
+  pauseGame() {
+      clearInterval(this.movementTimer);
+  }
 
   movePlayer(direction) {
     if (direction === "left" && this.player.positionX > 0) {
@@ -58,39 +56,36 @@ class Game {
 
   detectCollision(item) {
     if (
-        this.player.positionX < item.positionX + item.width &&
-        this.player.positionX + this.player.width > item.positionX &&
-        this.player.positionY < item.positionY + item.height &&
-        this.player.height + this.player.positionY > item.positionY
-      ) {
+      this.player.positionX < item.positionX + item.width &&
+      this.player.positionX + this.player.width > item.positionX &&
+      this.player.positionY < item.positionY + item.height &&
+      this.player.height + this.player.positionY > item.positionY
+    ) {
+      this.player.life--;
+      this.displayDetails();
+      this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
+      item.domElement.remove();
+    }
+    if (this.player.life === -1) {
+      this.gameOver();
+    }
 
-       this.player.life--;
-       this.displayDetails();
-     console.log("collision detected")
-     //   this.itemArr.splice(this.itemArr.indexOf(item), 1);
-     //   obstacle.domElement.remove();
-      }
-  //    if (this.player.life === -1) {
-  //      this.gameOver();
-      
   }
+  
 
   shootWeapon() {}
 
   deleteOutOfScreen(item) {
-    if (item.positionY === 0) {
-        this.obstacleArr.splice(this.obstacleArr.indexOf(obstacle), 1);
-        obstacle.domElement.remove();
-      }
+    if (item.positionX === 0) {
+      item.domElement.remove();
+      this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
     }
-  
+  }
 
   gameOver() {
-      if (this.player.life === -1){
-    alert("Game Over");
-    location.reload();
+      alert("Game Over");
+      location.reload();
   }
-}
 
   displayDetails() {
     let lifeLeft = this.player.life;
@@ -129,7 +124,7 @@ class Player {
 class Obstacle {
   constructor() {
     this.positionX = 85;
-    this.positionY = Math.floor(Math.random() * 70);
+    this.positionY = Math.floor(Math.random() * 65);
     this.domElement = null;
     this.width = 5;
     this.height = 5;
