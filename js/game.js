@@ -17,7 +17,8 @@ class Game {
     this.player.domElement = this.create("player");
     this.draw(this.player);
     this.runGame();
-
+    this.displayDetails();
+    
    
   }
 
@@ -26,6 +27,7 @@ class Game {
       this.obstacleArr.forEach((obstacle) => {
         obstacle.moveLeft();
         this.draw(obstacle);
+        this.detectCollision(obstacle);
       });
 
       if (this.timer % 5 === 0) {
@@ -33,7 +35,9 @@ class Game {
         newObstacle.domElement = this.create("obstacle");
         this.obstacleArr.push(newObstacle);
       }
+      this.gameOver()
       this.timer++
+
     },100);
   }
 
@@ -52,7 +56,24 @@ class Game {
     this.draw(this.player);
   }
 
-  detectCollision() {}
+  detectCollision(item) {
+    if (
+        this.player.positionX < item.positionX + item.width &&
+        this.player.positionX + this.player.width > item.positionX &&
+        this.player.positionY < item.positionY + item.height &&
+        this.player.height + this.player.positionY > item.positionY
+      ) {
+
+       this.player.life--;
+       this.displayDetails();
+     console.log("collision detected")
+     //   this.itemArr.splice(this.itemArr.indexOf(item), 1);
+     //   obstacle.domElement.remove();
+      }
+  //    if (this.player.life === -1) {
+  //      this.gameOver();
+      
+  }
 
   shootWeapon() {}
 
@@ -64,9 +85,17 @@ class Game {
     }
   
 
-  gameOver() {}
+  gameOver() {
+      if (this.player.life === -1){
+    alert("Game Over");
+    location.reload();
+  }
+}
 
-  displayDetails() {}
+  displayDetails() {
+    let lifeLeft = this.player.life;
+    document.getElementById("life").textContent = lifeLeft;
+  }
   // display life, score and time
 }
 
@@ -77,6 +106,7 @@ class Player {
     this.positionX = 0;
     this.positionY = 50;
     this.domElement = null;
+    this.life = 3;
   }
 
   moveLeft() {
