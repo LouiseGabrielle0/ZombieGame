@@ -4,13 +4,14 @@ class Game {
     this.create = create;
     this.player = null;
     this.obstacle = null;
+    this.bonus = null;
     this.obstacleArr = [];
+    this.bonusArr = [];
     this.movementTimer = null;
     this.timer = 0;
     this.run = false;
   }
 
- 
   start() {
     this.player = new Player();
     this.player.domElement = this.create("player");
@@ -27,18 +28,30 @@ class Game {
         this.deleteOutOfScreen(obstacle);
       });
 
+      this.bonusArr.forEach((bonus) => {
+        this.draw(bonus);
+        this.deleteOutOfScreen(bonus);
+        this.detectCollision(bonus);
+      })
+
       if (this.timer % 5 === 0) {
         const newObstacle = new Obstacle();
         newObstacle.domElement = this.create("obstacle");
         this.obstacleArr.push(newObstacle);
       }
 
+      if (this.timer % 25 === 0) {
+        const newBonus = new Bonus();
+        newBonus.domElement = this.create("bonus");
+        this.bonusArr.push(newBonus);
+      }
+      
       this.timer++;
     }, 100);
   }
 
   pauseGame() {
-      clearInterval(this.movementTimer);
+    clearInterval(this.movementTimer);
   }
 
   movePlayer(direction) {
@@ -61,17 +74,27 @@ class Game {
       this.player.positionY < item.positionY + item.height &&
       this.player.height + this.player.positionY > item.positionY
     ) {
+        switch (item.domElement.className) {
+            case "obstacle":       
       this.player.life--;
       this.displayDetails();
       this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
       item.domElement.remove();
+      break;
+            case "bonus":
+       this.player.score+=10
+       this.displayDetails()
+       this.bonusArr.splice(this.bonusArr.indexOf(item), 1);
+        item.domElement.remove();   
+        console.log(the.player.score)  
+        break;
+    }
     }
     if (this.player.life === -1) {
       this.gameOver();
-    s}
-
+      s;
+    }
   }
-  
 
   shootWeapon() {}
 
@@ -83,32 +106,35 @@ class Game {
   }
 
   gameOver() {
-      alert("Game Over");
-      document.location.reload()
-      clearInterval(this.movementTimer)
-      return
-    
+    alert("Game Over");
+    document.location.reload();
+    clearInterval(this.movementTimer);
+    return;
   }
 
-  reloadPage(){
-      document.location.reload()
+  reloadPage() {
+    document.location.reload();
   }
 
   displayDetails() {
     let lifeLeft = this.player.life;
     document.getElementById("life").textContent = lifeLeft;
-  }
+  
+    let score = this.player.score;
+    document.getElementById("score").textContent = score
   // display life, score and time
+  }
 }
 
 class Player {
   constructor() {
-    this.width = 2;
-    this.height = 5;
+    this.width = 3.3;
+    this.height = 5.1;
     this.positionX = 0;
     this.positionY = 50;
     this.domElement = null;
     this.life = 3;
+    this.score = 0;
   }
 
   moveLeft() {
@@ -141,3 +167,14 @@ class Obstacle {
     this.positionX--;
   }
 }
+
+class Bonus {
+    constructor() {
+        this.positionX = Math.floor(Math.random() * 85)
+        this.positionY = Math.floor(Math.random() * 60);
+        this.domElement = null;
+        this.width = 2;
+        this.height = 3.5;
+    }
+
+}    

@@ -15,13 +15,21 @@
 
 
 .player {
-    background-color: rgb(170, 15, 15);
+  
+    background-image: url(../images/player1.png);
+    background-repeat: no-repeat;
     position: absolute;
 }
 
 .obstacle {
-    background-color: rgb(138, 17, 17);
     position: absolute;
     background-image: url(../images/NicePng_zombie-png_80950.png);
+    background-repeat: no-repeat;
+}
+
+
+.bonus {
+    position: absolute;
+    background-image: url(../images/water.png);
     background-repeat: no-repeat;
 }
