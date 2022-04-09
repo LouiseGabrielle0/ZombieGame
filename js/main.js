@@ -13,13 +13,14 @@ function create(className) {
 // Draw element to the DOM
 
 function draw(item){
-    item.domElement.style.width = item.width + "%";
-    item.domElement.style.height = item.height +  "%";
-    item.domElement.style.left = item.positionX + "%";
-    item.domElement.style.bottom = item.positionY + "%";
+    item.domElement.style.width = item.width + "vw";
+    item.domElement.style.height = item.height +  "vh";
+    item.domElement.style.left = item.positionX + "vw";
+    item.domElement.style.bottom = item.positionY + "vh";
 }
 
 const game = new Game(create, draw);
+
 game.start();
 
 document.addEventListener("keydown", function (event) {
