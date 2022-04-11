@@ -15,12 +15,16 @@ class Game {
     this.shootTimerId = null;
   }
 
+  // items to be displayed on the initial screen 
+
   start() {
     this.player = new Player();
     this.player.domElement = this.create("player");
     this.draw(this.player);
     this.displayDetails();
   }
+
+  // allow the game to begin - create and loading moving zombies and stationary bonuses
 
   runGame() {
     this.movementTimer = setInterval(() => {
@@ -116,7 +120,7 @@ class Game {
       })},100)
     }
 
-  
+  // delete elements when out of bounds - note might chsnge this two methofds - detect out of screen and delete so can be reused elsewhere in the board
 
   deleteOutOfScreen(item) {
     if (item.positionX === 0 || item.positionX === 90) {
@@ -131,16 +135,21 @@ class Game {
   }
 }
 
+//end game
+
   gameOver() {
     alert("Game Over");
     document.location.reload();
     clearInterval(this.movementTimer);
     return;
   }
+//Allow the restart option
 
   reloadPage() {
     document.location.reload();
   }
+
+  // Game info available on page for user to see
 
   displayDetails() {
     let lifeLeft = this.player.life;
