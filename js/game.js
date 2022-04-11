@@ -119,14 +119,6 @@ class Game {
     newShot.domElement = this.create("shot");
     this.shotArr.push(newShot);
     this.draw(newShot);
-
-    // this.shootTimerId = setInterval(() => {
-    //   this.shotArr.forEach((shot) => {
-    //     this.draw(shot);
-    //     shot.moveRight();
-    //     this.deleteOutOfScreen(shot);
-    //   });
-    // }, 100);
   }
 
   detectShot(item) {
