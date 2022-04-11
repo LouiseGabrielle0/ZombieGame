@@ -5,11 +5,14 @@ class Game {
     this.player = null;
     this.obstacle = null;
     this.bonus = null;
+    this.weapon = null;
     this.obstacleArr = [];
     this.bonusArr = [];
+    this.shotArr = [];
     this.movementTimer = null;
     this.timer = 0;
     this.run = false;
+    this.shootTimerId = null;
   }
 
   start() {
@@ -86,7 +89,7 @@ class Game {
        this.displayDetails()
        this.bonusArr.splice(this.bonusArr.indexOf(item), 1);
         item.domElement.remove();   
-        console.log(the.player.score)  
+        console.log(this.player.score)  
         break;
     }
     }
@@ -96,14 +99,37 @@ class Game {
     }
   }
 
-  shootWeapon() {}
+  shootWeapon() {
+    let playerPositionX = this.player.positionX
+    let playerPositionY = this.player.positionY
+
+    const newShot = new Weapon(playerPositionX, playerPositionY)
+    newShot.domElement = this.create('shot');
+    this.shotArr.push(newShot);
+
+    this.shootTimerId = setInterval(() => {
+      this.shotArr.forEach((shot) => {
+        this.draw(shot)
+        shot.moveRight()
+        this.deleteOutOfScreen(shot)
+       // this.deleteShot()
+      })},100)
+    }
+
+  
 
   deleteOutOfScreen(item) {
-    if (item.positionX === 0) {
+    if (item.positionX === 0 || item.positionX === 90) {
       item.domElement.remove();
-      this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
+      switch (item.domElement.className) {
+        case "obstacle":       
+        this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
+        break;
+        case "shot":
+        this.shotArr.splice(this.shotArr.indexOf(item),1);
     }
   }
+}
 
   gameOver() {
     alert("Game Over");
@@ -154,6 +180,22 @@ class Player {
   }
 }
 
+class Weapon extends Player {
+  constructor(positionX, positionY) {
+    super()
+    this.positionX = positionX;
+    this.positionY = positionY;
+    this.domElement = null;
+    this.width = 1;
+    this.height = 1;
+  }
+
+  moveRight() {
+    this.positionX++;
+  }
+
+}
+
 class Obstacle {
   constructor() {
     this.positionX = 85;
@@ -162,7 +204,7 @@ class Obstacle {
     this.width = 2;
     this.height = 8;
   }
-
+  
   moveLeft() {
     this.positionX--;
   }
