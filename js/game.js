@@ -15,7 +15,7 @@ class Game {
     this.shootTimerId = null;
   }
 
-  // items to be displayed on the initial screen 
+  // items to be displayed on the initial screen
 
   start() {
     this.player = new Player();
@@ -40,6 +40,13 @@ class Game {
         this.draw(bonus);
         this.deleteOutOfScreen(bonus);
         this.detectCollision(bonus);
+        this.detectShot(bonus);
+      });
+
+      this.shotArr.forEach((shot) => {
+        this.draw(shot);
+        shot.moveRight();
+        this.deleteOutOfScreen(shot);
       })
 
       if (this.timer % 5 === 0) {
@@ -53,7 +60,7 @@ class Game {
         newBonus.domElement = this.create("bonus");
         this.bonusArr.push(newBonus);
       }
-      
+
       this.timer++;
     }, 100);
   }
@@ -82,21 +89,21 @@ class Game {
       this.player.positionY < item.positionY + item.height &&
       this.player.height + this.player.positionY > item.positionY
     ) {
-        switch (item.domElement.className) {
-            case "obstacle":       
-      this.player.life--;
-      this.displayDetails();
-      this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
-      item.domElement.remove();
-      break;
-            case "bonus":
-       this.player.score+=10
-       this.displayDetails()
-       this.bonusArr.splice(this.bonusArr.indexOf(item), 1);
-        item.domElement.remove();   
-        console.log(this.player.score)  
-        break;
-    }
+      switch (item.domElement.className) {
+        case "obstacle":
+          this.player.life--;
+          this.displayDetails();
+          this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
+          item.domElement.remove();
+          break;
+        case "bonus":
+          this.player.score += 10;
+          this.displayDetails();
+          this.bonusArr.splice(this.bonusArr.indexOf(item), 1);
+          item.domElement.remove();
+          console.log(this.player.score);
+          break;
+      }
     }
     if (this.player.life === -1) {
       this.gameOver();
@@ -105,52 +112,68 @@ class Game {
   }
 
   shootWeapon() {
-    let playerPositionX = this.player.positionX
-    let playerPositionY = this.player.positionY
+    let playerPositionX = this.player.positionX;
+    let playerPositionY = this.player.positionY;
 
-    const newShot = new Weapon(playerPositionX, playerPositionY)
-    newShot.domElement = this.create('shot');
+    const newShot = new Weapon(playerPositionX, playerPositionY);
+    newShot.domElement = this.create("shot");
     this.shotArr.push(newShot);
+    this.draw(newShot);
 
-    this.shootTimerId = setInterval(() => {
-      this.shotArr.forEach((shot) => {
-        this.draw(shot)
-        shot.moveRight()
-        this.deleteOutOfScreen(shot)
-      })},100)
-    }
+    // this.shootTimerId = setInterval(() => {
+    //   this.shotArr.forEach((shot) => {
+    //     this.draw(shot);
+    //     shot.moveRight();
+    //     this.deleteOutOfScreen(shot);
+    //   });
+    // }, 100);
+  }
 
-    
-
-    detectShot(item){
-      this.shotArr.forEach((shot) => {
-         if (
+  detectShot(item) {
+    this.shotArr.forEach((shot) => {
+      if (
         shot.positionX < item.positionX + item.width &&
         shot.positionX + shot.width > item.positionX &&
         shot.positionY < item.positionY + item.height &&
         shot.height + shot.positionY > item.positionY
       ) {
-      console.log("something is shot")
-    }
-  })
+        switch (item.domElement.className) {
+          case "obstacle":
+            console.log("zombie hit")
+            this.player.score += 10;
+            this.displayDetails();
+            this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
+            item.domElement.remove();
+            break;
+          case "bonus":
+            console.log("bonus hit")
+            this.player.score -= 10;
+            this.displayDetails();
+            this.bonusArr.splice(this.bonusArr.indexOf(item), 1);
+            item.domElement.remove();
+            break;
+        }
+      }
+    });
   }
 
-  // delete elements when out of bounds - note might chsnge this two methofds - detect out of screen and delete so can be reused elsewhere in the board
+  obstacleShot(item) {}
+  // delete elements when out of bounds - note might change this two methofds - detect out of screen and delete so can be reused elsewhere in the board
 
   deleteOutOfScreen(item) {
     if (item.positionX === 0 || item.positionX === 90) {
       item.domElement.remove();
       switch (item.domElement.className) {
-        case "obstacle":       
-        this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
-        break;
+        case "obstacle":
+          this.obstacleArr.splice(this.obstacleArr.indexOf(item), 1);
+          break;
         case "shot":
-        this.shotArr.splice(this.shotArr.indexOf(item),1);
+          this.shotArr.splice(this.shotArr.indexOf(item), 1);
+      }
     }
   }
-}
 
-//end game
+  //end game
 
   gameOver() {
     alert("Game Over");
@@ -158,7 +181,7 @@ class Game {
     clearInterval(this.movementTimer);
     return;
   }
-//Allow the restart option
+  //Allow the restart option
 
   reloadPage() {
     document.location.reload();
@@ -169,10 +192,10 @@ class Game {
   displayDetails() {
     let lifeLeft = this.player.life;
     document.getElementById("life").textContent = lifeLeft;
-  
+
     let score = this.player.score;
-    document.getElementById("score").textContent = score
-  // display life, score and time
+    document.getElementById("score").textContent = score;
+    // display life, score and time
   }
 }
 
@@ -206,7 +229,7 @@ class Player {
 
 class Weapon extends Player {
   constructor(positionX, positionY) {
-    super()
+    super();
     this.positionX = positionX;
     this.positionY = positionY;
     this.domElement = null;
@@ -217,7 +240,6 @@ class Weapon extends Player {
   moveRight() {
     this.positionX++;
   }
-
 }
 
 class Obstacle {
@@ -228,19 +250,18 @@ class Obstacle {
     this.width = 2;
     this.height = 8;
   }
-  
+
   moveLeft() {
     this.positionX--;
   }
 }
 
 class Bonus {
-    constructor() {
-        this.positionX = Math.floor(Math.random() * 85)
-        this.positionY = Math.floor(Math.random() * 60);
-        this.domElement = null;
-        this.width = 2;
-        this.height = 3.5;
-    }
-
-}    
+  constructor() {
+    this.positionX = Math.floor(Math.random() * 85);
+    this.positionY = Math.floor(Math.random() * 60);
+    this.domElement = null;
+    this.width = 2;
+    this.height = 3.5;
+  }
+}
