@@ -33,6 +33,7 @@ class Game {
         this.draw(obstacle);
         this.detectCollision(obstacle);
         this.deleteOutOfScreen(obstacle);
+        this.detectShot(obstacle);
       });
 
       this.bonusArr.forEach((bonus) => {
@@ -116,9 +117,23 @@ class Game {
         this.draw(shot)
         shot.moveRight()
         this.deleteOutOfScreen(shot)
-       // this.deleteShot()
       })},100)
     }
+
+    
+
+    detectShot(item){
+      this.shotArr.forEach((shot) => {
+         if (
+        shot.positionX < item.positionX + item.width &&
+        shot.positionX + shot.width > item.positionX &&
+        shot.positionY < item.positionY + item.height &&
+        shot.height + shot.positionY > item.positionY
+      ) {
+      console.log("something is shot")
+    }
+  })
+  }
 
   // delete elements when out of bounds - note might chsnge this two methofds - detect out of screen and delete so can be reused elsewhere in the board
 
